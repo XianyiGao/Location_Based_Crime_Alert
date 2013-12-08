@@ -1,36 +1,35 @@
 package com.example.location_based_crime_alert;
 
-
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.TimeZone;
 
-import android.location.Location;
-import android.location.LocationListener;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.widget.Toast;
+
 public class myMap extends FragmentActivity implements LocationListener,OnMyLocationButtonClickListener{
 
 	private GoogleMap mMap;
 	  private Marker m1,m2,m3,m4,m5;
-	  LatLng p; 
+	  LatLng p;
 	  DecimalFormat df;
 	  Double CurrentLat=0.0,CurrentLng=0.0;
 	  
-	  
-	  
-	 
 	  
 	  @Override
 	  protected void onCreate(Bundle savedInstanceState) {
@@ -170,4 +169,4 @@ public class myMap extends FragmentActivity implements LocationListener,OnMyLoca
 	}
 
 	
-} 
+}
