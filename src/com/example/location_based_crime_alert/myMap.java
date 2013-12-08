@@ -24,10 +24,13 @@ public class myMap extends FragmentActivity implements LocationListener,OnMyLoca
 
 	private GoogleMap mMap;
 	  private Marker m1,m2,m3,m4,m5;
-	  LatLng p;
+	  LatLng p; 
 	  DecimalFormat df;
 	  Double CurrentLat=0.0,CurrentLng=0.0;
 	  
+	  
+	  
+	 
 	  
 	  @Override
 	  protected void onCreate(Bundle savedInstanceState) {
