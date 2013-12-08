@@ -4,8 +4,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+<Button
+    android:id="@+id/button1"
+    style="?android:attr/buttonStyleSmall"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="GPS service" />
+<Button
+    android:id="@+id/button2"
+    style="?android:attr/buttonStyleSmall"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="GPS disable" />
+</LinearLayout>
+<android.gesture.GestureOverlayView
+    android:id="@+id/gestures"
+    android:layout_width="fill_parent"
+    android:layout_height="0dip"
+    android:layout_weight="0.86"
+    android:gestureStrokeType="multiple" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 <TextView  
-    android:layout_width="match_parent" 
-    android:layout_height="match_parent" 
-    android:text="1. Draw gesture  "/>
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="Emergency message set up with gesture &quot;-&quot; (horizontal swipe)"/>
+<TextView  
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="Direct to the Google map with gesture &quot;o&quot; (circle)"/>
+<TextView  
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="Send emergency message with gesture &quot;M&quot; (M shape)"/>
+
+</LinearLayout>
+</android.gesture.GestureOverlayView>
+
 </LinearLayout> 
