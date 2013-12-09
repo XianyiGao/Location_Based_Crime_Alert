@@ -2,8 +2,8 @@ package com.example.location_based_crime_alert;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.gesture.Gesture;
@@ -15,6 +15,7 @@ import android.gesture.Prediction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,7 +23,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   private GestureLibrary gestureLib;
   public static List<String> messages = new ArrayList<String>(); 
   public static int message_selection=0;
-  public static String Phone_Number=null;
+  public static String Phone_Number=" ";
   public static final int PICK_CONTACT=1;
   
 /** Called when the activity is first created. */
@@ -102,6 +103,19 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
     	//Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
 		//startActivityForResult(intent, PICK_CONTACT);
 		  
+    }else if (name.equals("m shape")){
+        Intent ii = new Intent(MainActivity.this, MainActivity.class);
+        PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, ii, 0);
+    	SmsManager sms = SmsManager.getDefault();
+    	if ((Phone_Number.length()>=10)&&(message_selection>0)){
+    	sms.sendTextMessage(Phone_Number, null, messages.get(message_selection), pi, null);
+    	Toast.makeText(this, "Done!", Toast.LENGTH_SHORT)
+        .show();
+    	}
+    	else {
+    		Toast.makeText(this, "Please set the emergency message!", Toast.LENGTH_SHORT)
+                .show();
+    	}
     }
   }
 } 
