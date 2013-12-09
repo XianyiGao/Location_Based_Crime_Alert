@@ -161,7 +161,7 @@ public class LocListener extends Service implements LocationListener {
 
 		} else {
 
-		    Toast.makeText(getBaseContext(), "Inside", Toast.LENGTH_LONG).show();
+		  
 
 		}
 

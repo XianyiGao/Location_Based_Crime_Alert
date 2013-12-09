@@ -29,21 +29,32 @@ public class myMap extends FragmentActivity implements LocationListener,OnMyLoca
 	  LatLng p;
 	  DecimalFormat df;
 	  Double CurrentLat=0.0,CurrentLng=0.0;
-	  
+	  String[] Query_lat=new String[100];
+	  int lat_length=0;
+	  String[] Query_long=new String[100];
+	  int long_length=0;
 	  @Override
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.map);
-	    
-
+	    CurrentLat=MainActivity.current_lat;
+	    CurrentLng=MainActivity.current_long;
+	    Bundle extras = getIntent().getExtras();
+	    Query_lat = extras.getStringArray("Query_lat");
+        lat_length = extras.getInt("lat_length");
+        Query_long = extras.getStringArray("Query_long");
+        long_length = extras.getInt("long_length");
+        Toast.makeText(this, Query_lat[0]+Query_long[0], Toast.LENGTH_SHORT)
+        .show();
 	     df = new DecimalFormat("###.##");
 	    setUpMapIfNeeded(); 
-	    
-	    	p=new LatLng(40.517828 , -74.465292);
-	     m2 =mMap.addMarker(new MarkerOptions().position(p).title("Mickey"));
+	    for (int i=0; i<lat_length; i++){
+	    	p=new LatLng(Float.valueOf(Query_lat[i]),Float.valueOf(Query_long[i]));
+	     m2 =mMap.addMarker(new MarkerOptions().position(p).title("Testing"));
 	     	mMap.addCircle(new CircleOptions().center(p).radius(100.0));
-	     	
-	     p=new LatLng(40.513179 , -74.433839);
+	    }
+	    
+	     /*p=new LatLng(40.513179 , -74.433839);
 	     	mMap.addCircle(new CircleOptions().center(p).radius(100.0));
 	     m3 =mMap.addMarker(new MarkerOptions().position(p).title("Donald"));
 	     
@@ -54,7 +65,7 @@ public class myMap extends FragmentActivity implements LocationListener,OnMyLoca
 	     p= new LatLng(40.497125 , -74.417059);
 	     mMap.addCircle(new CircleOptions().center(p).radius(100.0));
 	    m5 =mMap.addMarker(new MarkerOptions().position(p).title("Garfield"));
-	    
+	    */
 
 	    mMap.setOnMarkerClickListener(new OnMarkerClickListener(){
 

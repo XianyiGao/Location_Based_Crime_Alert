@@ -45,7 +45,9 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   Button GPS_service, GPS_disable;
   static double lat=0, lon=0;
   TextView text, addres;
-  public static List<String> Query_lat, Query_long;
+  public static double current_lat=0, current_long=0;
+  public static List<String> Query_lat = new ArrayList<String>();
+  public static List<String> Query_long=new ArrayList<String>();
 /** Called when the activity is first created. */
 
   @Override
@@ -68,6 +70,8 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
     GPS_service.setOnClickListener(GPS_serviceClick);
     GPS_disable = (Button) findViewById(R.id.button2);
     GPS_disable.setOnClickListener(GPS_disableClick);
+    Query_lat.add("23.3");
+    Query_long.add("-156.3");
     locationListener = new LocationListener() {
     	
         public void onLocationChanged(Location location) {
@@ -85,6 +89,8 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
         		//+location.getProvider()
         		lat=location.getLatitude();
         		lon=location.getLongitude();
+        		current_lat=lat;
+        		current_long=lon;
         		text.setText(print);
         		LatLng myLatLng = new LatLng(location.getLatitude(),location.getLongitude());
         		try {
@@ -149,6 +155,20 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
     }else if (name.equals("circle")){
     	Intent intent = new Intent(MainActivity.this,
 				myMap.class);
+    	String[] latitude = new String[100];
+		int lat_length = 0;
+		lat_length = Query_lat.size();
+		String[] longitude = new String[100];
+		int long_length = 0;
+		long_length = Query_long.size();
+		for (int i=0; i<lat_length; i++){
+			latitude[i]=Query_lat.get(i);
+			longitude[i]=Query_long.get(i);
+		}
+		intent.putExtra("Query_lat", latitude);
+		intent.putExtra("lat_length", lat_length);
+		intent.putExtra("Query_long", longitude);
+		intent.putExtra("long_length", long_length);
 		startActivity(intent);
     }else if (name.equals("c shape")){
     	Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -192,9 +212,14 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 			String[] latitude = new String[100];
 			int lat_length = 0;
 			lat_length = Query_lat.size();
+			
 			String[] longitude = new String[100];
 			int long_length = 0;
 			long_length = Query_long.size();
+			for (int i=0; i<lat_length; i++){
+				latitude[i]=Query_lat.get(i);
+				longitude[i]=Query_long.get(i);
+			}
 			intent.putExtra("Query_lat", latitude);
 			intent.putExtra("lat_length", lat_length);
 			intent.putExtra("Query_long", longitude);
@@ -205,7 +230,8 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   };
   private OnClickListener GPS_disableClick = new OnClickListener() {
 		public void onClick(View v) {
-			 
+			Intent intent = new Intent(MainActivity.this, LocListener.class);
+			 stopService(intent);
 		}
 };
 } 
