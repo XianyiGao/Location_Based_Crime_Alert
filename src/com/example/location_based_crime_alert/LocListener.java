@@ -1,6 +1,8 @@
 package com.example.location_based_crime_alert;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 
 import android.content.Context;
 
@@ -15,6 +17,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 
 
 import android.widget.Toast;
@@ -32,13 +35,14 @@ public class LocListener extends Service implements LocationListener {
 
 	public LocationListener l;
 
-	public static double QuerryLat=0.0,QuerryLng=0.0;
+	//public static double QuerryLat=0.0,QuerryLng=0.0;
 	String[] Query_lat=new String[100];
 	  int lat_length=0;
 	  String[] Query_long=new String[100];
 	  int long_length=0;
 	  
-	  NotificationManager mBuilder;
+	  NotificationCompat.Builder mBuilder;
+	  NotificationManager mNotificationManager;
 	@Override
 
 	public void onCreate(){
@@ -53,8 +57,33 @@ public class LocListener extends Service implements LocationListener {
 
 	            .setContentTitle("My notification")
 
-	            .setContentText("Hello World!");
+	            .setContentText("You are in a crime area.");
+		Intent resultIntent = new Intent(this, MainActivity.class);
+		 TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
+		    // Adds the back stack for the Intent (but not the Intent itself)
+
+		    stackBuilder.addParentStack(MainActivity.class);
+
+		    // Adds the Intent that starts the Activity to the top of the stack
+
+		    stackBuilder.addNextIntent(resultIntent);
+
+		    PendingIntent resultPendingIntent =
+
+		            stackBuilder.getPendingIntent(
+
+		                0,
+
+		                PendingIntent.FLAG_UPDATE_CURRENT
+
+		            );
+
+		    mBuilder.setContentIntent(resultPendingIntent);
+
+		    mNotificationManager =
+
+		        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
         //---use the LocationManager class to obtain locations data---
@@ -123,12 +152,12 @@ public class LocListener extends Service implements LocationListener {
 		for (int i=0; i<lat_length; i++ ){
 		Location.distanceBetween( CurLat, CurLng,
 
-		    QuerryLat, QuerryLng, distance);
+				Float.valueOf(Query_lat[i]), Float.valueOf(Query_long[i]), distance);
 
 
 		if( distance[0] <= 100.0  ){
 
-			
+			mNotificationManager.notify(0,mBuilder.build());
 
 		} else {
 
