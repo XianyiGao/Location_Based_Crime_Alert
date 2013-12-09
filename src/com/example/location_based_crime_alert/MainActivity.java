@@ -140,7 +140,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 		startActivity(intent);
     }else if (name.equals("circle")){
     	Intent intent = new Intent(MainActivity.this,
-				google_Map.class);
+				myMap.class);
 		startActivity(intent);
     }else if (name.equals("c shape")){
     	Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -175,7 +175,6 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   }
   @Override 
   protected void onDestroy() { 
-    
 	  locationManager.removeUpdates(locationListener);
    super.onDestroy(); 
   } 
