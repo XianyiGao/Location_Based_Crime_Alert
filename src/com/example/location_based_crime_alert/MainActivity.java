@@ -140,7 +140,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 		startActivity(intent);
     }else if (name.equals("circle")){
     	Intent intent = new Intent(MainActivity.this,
-				myMap.class);
+				google_Map.class);
 		startActivity(intent);
     }else if (name.equals("c shape")){
     	Intent intent = new Intent(Intent.ACTION_DIAL);

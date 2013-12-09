@@ -43,6 +43,7 @@
         </activity>
         <activity android:name="com.example.location_based_crime_alert.myMap" />
         <activity android:name=".messageSetting" />
+        <activity android:name=".google_Map" />
          <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyB9xRjM3fB8UQK2bm6zqy8yQTsRJFE0CUM" />
