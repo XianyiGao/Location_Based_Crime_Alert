@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   LocationManager locationManager=null;
   LocationListener locationListener=null;
   static double lat=0, lon=0;
-  TextView text=null, addres;
+  TextView text, addres;
 /** Called when the activity is first created. */
 
   @Override
@@ -117,6 +117,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
         	
         }
       };
+      locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
   }
   
@@ -151,17 +152,19 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
         Intent ii = new Intent(MainActivity.this, MainActivity.class);
         PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, ii, 0);
     	SmsManager sms = SmsManager.getDefault();
+    	String message="";
     	if ((Phone_Number.length()>=10)&&(message_selection>0)){
+    		
     		if (messages.get(message_selection).equals("Help me! I'm in ADDRESS.")){
-    			String message;
-    			if (addres.getText().toString().equals("Waiting for Location")) {
+    			
+    			if (addres.getText().toString().equals("Waiting for Location")||(addres.getText().toString().equals("Address"))) {
     				message="Help me! I'm in latitude "+String.format("%7.3f", lat)+" and longitude "+String.format("%7.3f", lon);
     			}else message = "Help me! I'm in " + addres.getText().toString();
     			sms.sendTextMessage(Phone_Number, null, message, pi, null);
     		}else{
     	sms.sendTextMessage(Phone_Number, null, messages.get(message_selection), pi, null);
     		}
-    	Toast.makeText(this, "Message sent!", Toast.LENGTH_SHORT)
+    	Toast.makeText(this, message, Toast.LENGTH_SHORT)
         .show();
     	}
     	else {
@@ -170,4 +173,10 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
     	}
     }
   }
+  @Override 
+  protected void onDestroy() { 
+    
+	  locationManager.removeUpdates(locationListener);
+   super.onDestroy(); 
+  } 
 } 
