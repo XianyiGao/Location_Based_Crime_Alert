@@ -2,8 +2,15 @@ package com.example.location_based_crime_alert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.gesture.Gesture;
@@ -12,11 +19,17 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnGesturePerformedListener {
@@ -25,57 +38,88 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   public static int message_selection=0;
   public static String Phone_Number=" ";
   public static final int PICK_CONTACT=1;
-  
+  LocationManager locationManager=null;
+  LocationListener locationListener=null;
+  static double lat=0, lon=0;
+  TextView text=null, addres;
 /** Called when the activity is first created. */
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
+	  final Context context;
+		context=this;
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     GestureOverlayView gestureOverlayView = (GestureOverlayView) findViewById(R.id.gestures);
     gestureOverlayView.addOnGesturePerformedListener(MainActivity.this);
+    text = (TextView) findViewById(R.id.textView1);
+    addres = (TextView) findViewById(R.id.textView2);
     gestureLib = GestureLibraries.fromRawResource(MainActivity.this, R.raw.gestures);
     if (!gestureLib.load()) {
       finish();
     }
     messages.add("----SELECT----");
-    messages.add("Help me! I'm in ADDRESS. (ADDRESS will be replaced by the current location)");
+    messages.add("Help me! I'm in ADDRESS.");
+    locationListener = new LocationListener() {
+        
+        public void onLocationChanged(Location location) {
+          
+
+        	
+        	if (location != null)
+        	{
+        		String print="";
+
+        		String stra=String.format("%7.3f", location.getLatitude());
+        		String strb=String.format("%7.3f", location.getLongitude());
+        		
+        		print="Latitude: "+stra+"\nLongitude: "+strb;
+        		//+location.getProvider()
+        		lat=location.getLatitude();
+        		lon=location.getLongitude();
+        		text.setText(print);
+        		LatLng myLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+        		try {
+
+                    Geocoder geo = new Geocoder(context, Locale.getDefault());
+                   
+                    List<Address> addresses = geo.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if (addresses.isEmpty()) {
+                        addres.setText("Waiting for Location");
+                    	
+                    }
+                    else {
+                        if (addresses.size() > 0) {
+                            addres.setText(addresses.get(0).getFeatureName() + "\n" + addresses.get(0).getLocality() +"\n" + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+                         
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace(); 
+                }
+        	}
+        }
+    	
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+  		// could do something here
+
+  	  }
+    	
+        public void onProviderEnabled(String provider) {
+        	// could do something here
+        	
+        }
     
+        public void onProviderDisabled(String provider) {
+        	// could do something here
+        	
+        }
+      };
+    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
   }
-  @Override
-	 public void onActivityResult(int reqCode, int resultCode, Intent data) {
-	 super.onActivityResult(reqCode, resultCode, data);
-
-	 switch (reqCode) {
-	 case (PICK_CONTACT):
-	   if (resultCode == Activity.RESULT_OK) {
-
-	     Uri contactData = data.getData();
-	     Cursor c =  managedQuery(contactData, null, null, null, null);
-	     if (c.moveToFirst()) {
-
-
-	         String id =c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-
-	         String hasPhone =c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-	           if (hasPhone.equalsIgnoreCase("1")) {
-	          Cursor phones = getContentResolver().query( 
-	                       ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null, 
-	                       ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id, 
-	                       null, null);
-	             phones.moveToFirst();
-	              String cNumber = phones.getString(phones.getColumnIndex("data1"));
-	              Toast.makeText(this, "Number " + cNumber,Toast.LENGTH_SHORT).show();
-	           }
-	         String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-
-	     }
-	   }
-	   break;
-	 }
-	 }
+  
   @Override
   public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
     ArrayList<Prediction> predictions = gestureLib.recognize(gesture);
@@ -108,8 +152,16 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
         PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this, 0, ii, 0);
     	SmsManager sms = SmsManager.getDefault();
     	if ((Phone_Number.length()>=10)&&(message_selection>0)){
+    		if (messages.get(message_selection).equals("Help me! I'm in ADDRESS.")){
+    			String message;
+    			if (addres.getText().toString().equals("Waiting for Location")) {
+    				message="Help me! I'm in latitude "+String.format("%7.3f", lat)+" and longitude "+String.format("%7.3f", lon);
+    			}else message = "Help me! I'm in " + addres.getText().toString();
+    			sms.sendTextMessage(Phone_Number, null, message, pi, null);
+    		}else{
     	sms.sendTextMessage(Phone_Number, null, messages.get(message_selection), pi, null);
-    	Toast.makeText(this, "Done!", Toast.LENGTH_SHORT)
+    		}
+    	Toast.makeText(this, "Message sent!", Toast.LENGTH_SHORT)
         .show();
     	}
     	else {
