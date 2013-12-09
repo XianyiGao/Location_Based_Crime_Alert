@@ -45,6 +45,12 @@
     android:layout_height="wrap_content" 
     android:text="Send emergency message with gesture &quot;M&quot; (M shape)"/>
 
+<TextView
+    android:id="@+id/textView1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Make a call with gesture &quot;C&quot; (C shape)" />
+
 </LinearLayout>
 </android.gesture.GestureOverlayView>
 

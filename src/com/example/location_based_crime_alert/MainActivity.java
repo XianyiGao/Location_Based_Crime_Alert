@@ -5,13 +5,16 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,6 +23,7 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   public static List<String> messages = new ArrayList<String>(); 
   public static int message_selection=0;
   public static String Phone_Number=null;
+  public static final int PICK_CONTACT=1;
   
 /** Called when the activity is first created. */
 
@@ -34,10 +38,43 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
       finish();
     }
     messages.add("----SELECT----");
-    messages.add("Help me! I'm in ADDRESS.\n(ADDRESS will be replaced by the current location)");
+    messages.add("Help me! I'm in ADDRESS. (ADDRESS will be replaced by the current location)");
     
   }
+  @Override
+	 public void onActivityResult(int reqCode, int resultCode, Intent data) {
+	 super.onActivityResult(reqCode, resultCode, data);
 
+	 switch (reqCode) {
+	 case (PICK_CONTACT):
+	   if (resultCode == Activity.RESULT_OK) {
+
+	     Uri contactData = data.getData();
+	     Cursor c =  managedQuery(contactData, null, null, null, null);
+	     if (c.moveToFirst()) {
+
+
+	         String id =c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+
+	         String hasPhone =c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+	           if (hasPhone.equalsIgnoreCase("1")) {
+	          Cursor phones = getContentResolver().query( 
+	                       ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null, 
+	                       ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id, 
+	                       null, null);
+	             phones.moveToFirst();
+	              String cNumber = phones.getString(phones.getColumnIndex("data1"));
+	              Toast.makeText(this, "Number " + cNumber,Toast.LENGTH_SHORT).show();
+	           }
+	         String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+
+	     }
+	   }
+	   break;
+	 }
+	 }
   @Override
   public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
     ArrayList<Prediction> predictions = gestureLib.recognize(gesture);
@@ -59,6 +96,12 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
     	Intent intent = new Intent(MainActivity.this,
 				myMap.class);
 		startActivity(intent);
+    }else if (name.equals("c shape")){
+    	Intent intent = new Intent(Intent.ACTION_DIAL);
+    	startActivity(intent);
+    	//Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+		//startActivityForResult(intent, PICK_CONTACT);
+		  
     }
   }
 } 
