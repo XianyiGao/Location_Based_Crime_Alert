@@ -30,12 +30,12 @@ public class myMap extends FragmentActivity implements LocationListener,OnMyLoca
 	  DecimalFormat df;
 	  Double CurrentLat=0.0,CurrentLng=0.0;
 	  
-	  
 	  @Override
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.map);
 	    
+
 	     df = new DecimalFormat("###.##");
 	    setUpMapIfNeeded(); 
 	    

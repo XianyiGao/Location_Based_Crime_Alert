@@ -29,6 +29,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,8 +42,10 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   public static final int PICK_CONTACT=1;
   LocationManager locationManager=null;
   LocationListener locationListener=null;
+  Button GPS_service, GPS_disable;
   static double lat=0, lon=0;
   TextView text, addres;
+  public static List<String> Query_lat, Query_long;
 /** Called when the activity is first created. */
 
   @Override
@@ -60,8 +64,12 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
     }
     messages.add("----SELECT----");
     messages.add("Help me! I'm in ADDRESS.");
+    GPS_service = (Button) findViewById(R.id.button1);
+    GPS_service.setOnClickListener(GPS_serviceClick);
+    GPS_disable = (Button) findViewById(R.id.button2);
+    GPS_disable.setOnClickListener(GPS_disableClick);
     locationListener = new LocationListener() {
-        
+    	
         public void onLocationChanged(Location location) {
           
 
@@ -178,4 +186,26 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 	  locationManager.removeUpdates(locationListener);
    super.onDestroy(); 
   } 
+  private OnClickListener GPS_serviceClick = new OnClickListener() {
+		public void onClick(View v) {
+			Intent intent = new Intent(MainActivity.this, LocListener.class);
+			String[] latitude = new String[100];
+			int lat_length = 0;
+			lat_length = Query_lat.size();
+			String[] longitude = new String[100];
+			int long_length = 0;
+			long_length = Query_long.size();
+			intent.putExtra("Query_lat", latitude);
+			intent.putExtra("lat_length", lat_length);
+			intent.putExtra("Query_long", longitude);
+			intent.putExtra("long_length", long_length);
+			
+			startService(intent);
+		}
+  };
+  private OnClickListener GPS_disableClick = new OnClickListener() {
+		public void onClick(View v) {
+			 
+		}
+};
 } 
