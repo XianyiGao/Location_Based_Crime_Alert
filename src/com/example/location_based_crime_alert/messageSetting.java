@@ -60,7 +60,9 @@ private ArrayAdapter<String> adapter, adapter2;
 		spinner_handle2.setAdapter(adapter2);
 		
 		phone_number = (EditText) findViewById(R.id.editText2);
-		
+		if (MainActivity.Phone_Number.length()>=10){
+			phone_number.setText(MainActivity.Phone_Number);
+		}
 		
     };
     

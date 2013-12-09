@@ -1,5 +1,9 @@
 package com.example.location_based_crime_alert;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +30,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.view.View;
@@ -35,6 +40,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnGesturePerformedListener {
+	private File path = Environment
+			.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS
+					+ "/Final_Project/");
+	private File file =  new File(path, "CrimeAlerrt.txt");
   private GestureLibrary gestureLib;
   public static List<String> messages = new ArrayList<String>(); 
   public static int message_selection=0;
@@ -64,14 +73,41 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
     if (!gestureLib.load()) {
       finish();
     }
+    
     messages.add("----SELECT----");
     messages.add("Help me! I'm in ADDRESS.");
+    try{
+		path.mkdirs();
+		if (file.exists()){
+			messages.clear();
+		//Toast.makeText(getApplicationContext(), "exist", Toast.LENGTH_LONG).show();
+	    BufferedReader br = new BufferedReader(new FileReader(file));
+	        String line = br.readLine();
+	        message_selection=Integer.parseInt(line);
+	        line = br.readLine();
+	        int number_of_message=Integer.parseInt(line);
+	        for (int i=0; i<number_of_message; i++){
+	        	line = br.readLine();
+	        	messages.add(line);
+	        }
+	            line = br.readLine();
+	            Phone_Number=line;
+	        
+	     
+	        
+	        br.close();}
+	    
+           
+	} catch(Exception e){}
+    
+    
     GPS_service = (Button) findViewById(R.id.button1);
     GPS_service.setOnClickListener(GPS_serviceClick);
     GPS_disable = (Button) findViewById(R.id.button2);
     GPS_disable.setOnClickListener(GPS_disableClick);
     Query_lat.add("23.3");
     Query_long.add("-156.3");
+    
     locationListener = new LocationListener() {
     	
         public void onLocationChanged(Location location) {
@@ -204,8 +240,27 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   @Override 
   protected void onDestroy() { 
 	  locationManager.removeUpdates(locationListener);
+	  try{
+			path.mkdirs();
+			file.setWritable(true);
+			
+			FileWriter output = new FileWriter(file);
+			output.write(String.valueOf(message_selection)+"\n");
+			output.write(String.valueOf(messages.size())+"\n");
+			
+			for (int i=0; i<messages.size();i++){
+				output.write(messages.get(i)+"\n");
+			}
+			output.write(String.valueOf(Phone_Number)+"\n");
+			output.close();
+			
+		} catch(Exception e){
+			Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
+		}
+	  
    super.onDestroy(); 
   } 
+  
   private OnClickListener GPS_serviceClick = new OnClickListener() {
 		public void onClick(View v) {
 			Intent intent = new Intent(MainActivity.this, LocListener.class);
@@ -234,4 +289,5 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 			 stopService(intent);
 		}
 };
+
 } 
