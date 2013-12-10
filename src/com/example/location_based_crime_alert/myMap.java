@@ -114,7 +114,7 @@ public class myMap extends FragmentActivity implements LocationListener,OnMyLoca
 		  
 		  for (int i=0; i<downloadFromServer.crimesList.size(); i++){
 		    	p=new LatLng(Double.parseDouble(downloadFromServer.crimesList.get(i).get("geo_lat")),Double.parseDouble(downloadFromServer.crimesList.get(i).get("geo_long")));
-		     m2 =mMap.addMarker(new MarkerOptions().position(p).title(downloadFromServer.crimesList.get(i).get("title")).snippet(downloadFromServer.crimesList.get(i).get("description")));
+		     m2 =mMap.addMarker(new MarkerOptions().position(p).title(downloadFromServer.crimesList.get(i).get("title")).snippet("Occurrence Time: "+downloadFromServer.crimesList.get(i).get("updated_at")+"\n"+downloadFromServer.crimesList.get(i).get("description")));
 		     	mMap.addCircle(new CircleOptions().center(p).radius(100.0));
 		    }
 	  }

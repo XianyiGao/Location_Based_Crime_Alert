@@ -31,6 +31,7 @@ public class downloadFromServer {
 	private static final String TAG_GEO_LONG = "geo_long";
 	private static final String TAG_DESCRIPTION = "description";
 	private static final String TAG_OFFICIAL = "official";
+	private static final String TAG_DATE = "updated_at";
 	private static final int official = 0;
 	
     private JSONParser jParser = new JSONParser();
@@ -102,6 +103,7 @@ public class downloadFromServer {
                         String geo_lat = c.getString(TAG_GEO_LAT);
                         String geo_long = c.getString(TAG_GEO_LONG);
                         String official = c.getString(TAG_OFFICIAL);
+                        String date = c.getString(TAG_DATE);
  
                         // creating new HashMap
                         HashMap<String, String> map = new HashMap<String, String>();
@@ -113,6 +115,7 @@ public class downloadFromServer {
                         map.put(TAG_GEO_LAT, geo_lat);
                         map.put(TAG_GEO_LONG, geo_long);
                         map.put(TAG_OFFICIAL, official);
+                        map.put(TAG_DATE, date);
  
                         // adding HashList to ArrayList
                         crimesList.add(map);
