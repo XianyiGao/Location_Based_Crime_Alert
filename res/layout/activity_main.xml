@@ -13,13 +13,13 @@
     style="?android:attr/buttonStyleSmall"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="GPS service" />
+    android:text="Crime Area Auto Monitoring" />
 <Button
     android:id="@+id/button2"
     style="?android:attr/buttonStyleSmall"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="GPS disable" />
+    android:text="Turn off" />
 </LinearLayout>
 <android.gesture.GestureOverlayView
     android:id="@+id/gestures"
