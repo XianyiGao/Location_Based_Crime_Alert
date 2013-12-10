@@ -16,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -114,7 +115,11 @@ public class myMap extends FragmentActivity implements LocationListener,OnMyLoca
 		  
 		  for (int i=0; i<downloadFromServer.crimesList.size(); i++){
 		    	p=new LatLng(Double.parseDouble(downloadFromServer.crimesList.get(i).get("geo_lat")),Double.parseDouble(downloadFromServer.crimesList.get(i).get("geo_long")));
-		     m2 =mMap.addMarker(new MarkerOptions().position(p).title(downloadFromServer.crimesList.get(i).get("title")).snippet("Occurrence Time: "+downloadFromServer.crimesList.get(i).get("updated_at")+"\n"+downloadFromServer.crimesList.get(i).get("description")));
+		    	if (downloadFromServer.crimesList.get(i).get("official").equals("1"))
+		    		m2 =mMap.addMarker(new MarkerOptions().position(p).title(downloadFromServer.crimesList.get(i).get("title")).snippet("Occurrence Time: "+downloadFromServer.crimesList.get(i).get("updated_at")+"\n"+downloadFromServer.crimesList.get(i).get("description")));
+		    	else
+		     m2 =mMap.addMarker(new MarkerOptions().position(p).title(downloadFromServer.crimesList.get(i).get("title")).snippet("Occurrence Time: "+downloadFromServer.crimesList.get(i).get("updated_at")+"\n"+downloadFromServer.crimesList.get(i).get("description")).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+		     
 		     	mMap.addCircle(new CircleOptions().center(p).radius(100.0));
 		    }
 	  }
