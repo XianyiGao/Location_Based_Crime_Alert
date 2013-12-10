@@ -15,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 
 import android.os.Bundle;
+import android.os.Vibrator;
 
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -34,7 +35,7 @@ public class LocListener extends Service implements LocationListener {
 	public LocationManager lm;
 
 	public LocationListener l;
-
+	Vibrator vibe;
 	//public static double QuerryLat=0.0,QuerryLng=0.0;
 	String[] Query_lat=new String[100];
 	  int lat_length=0;
@@ -55,9 +56,10 @@ public class LocListener extends Service implements LocationListener {
 
 	            .setSmallIcon(R.drawable.common_signin_btn_icon_focus_light)
 
-	            .setContentTitle("My notification")
+	            .setContentTitle("Be Cautious")
 
 	            .setContentText("You are in a crime area.");
+		vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);	
 		Intent resultIntent = new Intent(this, MainActivity.class);
 		 TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
@@ -148,20 +150,23 @@ public class LocListener extends Service implements LocationListener {
 		float [] distance= new float[2];
 
 		boolean flag=true;
-		
-		for (int i=0; i<lat_length; i++ ){
+		flag=true;
+		for (int i=0; i<downloadFromServer.crimesList.size(); i++ ){
 		Location.distanceBetween( CurLat, CurLng,
 
-				Float.valueOf(Query_lat[i]), Float.valueOf(Query_long[i]), distance);
+				Double.parseDouble(downloadFromServer.crimesList.get(i).get("geo_lat")),Double.parseDouble(downloadFromServer.crimesList.get(i).get("geo_long")), distance);
 
 
-		if( distance[0] <= 100.0  ){
+		if(( distance[0] <= 100.0  )&&(flag)){
 
 			mNotificationManager.notify(0,mBuilder.build());
+			//long[] pattern={0,200,500};
+			if (vibration_control.vibe==null) vibration_control.vibe=(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);	
+			if(vibe.hasVibrator()) 
+				vibe.vibrate(10000);
+		flag=false;
 
 		} else {
-
-		  
 
 		}
 

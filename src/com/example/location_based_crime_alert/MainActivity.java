@@ -8,15 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -28,16 +23,17 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
+import android.os.Vibrator;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends Activity implements OnGesturePerformedListener {
 	private File path = Environment
@@ -57,7 +53,10 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
   public static double current_lat=0, current_long=0;
   public static List<String> Query_lat = new ArrayList<String>();
   public static List<String> Query_long=new ArrayList<String>();
-/** Called when the activity is first created. */
+  downloadFromServer d;
+  
+  
+  /** Called when the activity is first created. */
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -70,10 +69,13 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
     text = (TextView) findViewById(R.id.textView1);
     addres = (TextView) findViewById(R.id.textView2);
     gestureLib = GestureLibraries.fromRawResource(MainActivity.this, R.raw.gestures);
+    d=new downloadFromServer(this);
     if (!gestureLib.load()) {
       finish();
     }
     
+
+	
     messages.add("----SELECT----");
     messages.add("Help me! I'm in ADDRESS.");
     try{
@@ -281,12 +283,22 @@ public class MainActivity extends Activity implements OnGesturePerformedListener
 			intent.putExtra("long_length", long_length);
 			
 			startService(intent);
+			GPS_service.setEnabled(false);
+			GPS_disable.setEnabled(true);
 		}
   };
   private OnClickListener GPS_disableClick = new OnClickListener() {
 		public void onClick(View v) {
 			Intent intent = new Intent(MainActivity.this, LocListener.class);
-			 stopService(intent);
+			try{ 
+			stopService(intent);
+			}catch(Exception e){}
+			 GPS_disable.setEnabled(false);
+			 GPS_service.setEnabled(true);
+			 try{
+	 				vibration_control.vibe.cancel();
+	 				vibration_control.vibe=null;
+	 }catch(Exception e){}
 		}
 };
 

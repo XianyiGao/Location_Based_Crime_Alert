@@ -39,7 +39,7 @@
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="Direct to the Google map with gesture &quot;o&quot; (circle)"/>
+    android:text="Direct to the Google map with gesture &quot;o&quot; (circle-counterclockwise)"/>
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 

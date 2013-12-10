@@ -18,7 +18,30 @@
 	    android:layout_alignParentBottom="true"
 	    android:layout_alignParentLeft="true"
 	    android:layout_below="@+id/button2" >
+ <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
+
+<TextView  
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="Send emergency message with gesture &quot;M&quot; (M shape)"/>
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Make a call with gesture &quot;C&quot; (C shape)" />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Upload current location to server as crime area with &quot;S&quot; (S shape)" />
+
+
+
+</LinearLayout>
     </android.gesture.GestureOverlayView>
    
     
